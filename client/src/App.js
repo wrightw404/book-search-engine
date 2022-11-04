@@ -16,7 +16,8 @@ const client = new ApolloClient({
         authorization: token ? `Bearer ${token}` : ''
       }
     })
-  }
+  },
+  uri: '/graphql'
 })
 
 function App() {
