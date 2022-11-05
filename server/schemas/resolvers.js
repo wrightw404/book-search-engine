@@ -19,14 +19,14 @@ const resolvers = {
       const token = signToken(user);
       return { token, user };
     },
-    login: async (parent, args) => {
+    login: async (parent, {email, password}) => {
       const user = await User.findOne({ email });
 
       if (!user) {
         throw new AuthenticationError('No user found with this email address');
       }
 
-      const correctPw = await User.isCorrectPassword(password);
+      const correctPw = await user.isCorrectPassword(password);
 
       if (!correctPw) {
         throw new AuthenticationError('Incorrect credentials');
@@ -39,7 +39,7 @@ const resolvers = {
    
 
     //save book
-    savedBook: async (parent, { book }, context) =>{
+    saveBook: async (parent, { book }, context) =>{
         if(context.user){
             const updateUser = await User.findOneAndUpdate(
                 { _id: context.user._id },
@@ -48,6 +48,7 @@ const resolvers = {
             )
             return updateUser;
         }
+        throw new AuthenticationError('not logged in');
     },
 
 
@@ -60,6 +61,7 @@ const resolvers = {
         )
         return updateUser;
      }
+     throw new AuthenticationError('not logged in');
     }
 },
 
